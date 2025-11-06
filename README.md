@@ -1,11 +1,11 @@
 # 🚗 Análisis Geoespacial de Accidentes de Tránsito en Estados Unidos
 
-### 👥 Estudiantes
+## 👥 Estudiantes
 
 - Darío Zamora Rojas
 - Valeria Chinchilla Mejías
 
-### 🎯 Objetivos del Análisis
+## 🎯 Objetivos del Análisis
 
 La aplicación está diseñada para responder cuatro preguntas principales de investigación:
 
