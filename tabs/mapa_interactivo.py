@@ -29,7 +29,7 @@ def show_mapa_dispersion(df: pd.DataFrame):
     
     with col1:
         # Límite de puntos para el mapa
-        max_points = st.slider("📍 Máximo de puntos en el mapa", 1000, 1000000, 15000, 1000)
+        max_points = st.slider("📍 Máximo de puntos en el mapa", 1000, 100000, 15000, 1000)
     
     with col2:
         # Colorear por severidad
