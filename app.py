@@ -1,6 +1,7 @@
 import streamlit as st
 from data_manager import get_data_manager
 from config import setup_page_config, apply_custom_css
+from tabs import show_tabla_interactiva, show_graficos_estadisticos, show_mapa_interactivo
 
 def main():
     # Configurar página y estilos
@@ -14,7 +15,9 @@ def main():
     with st.expander("📋 Información del Proyecto"):
         st.markdown("""
         **Estudiantes:** Darío Zamora Rojas, Valeria Chinchilla Mejías  
+        
         **Fuente de datos:** [Kaggle - US Accidents Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) - [Archivo pre-filtrado en Google Drive](https://drive.google.com/file/d/1_T0CVP34NUlWyyYBjgdzTr32dLv6fpQu/view?usp=sharing)
+        
         **Período:** 2020-2023 (muestra optimizada)  
         """)
     
@@ -104,6 +107,37 @@ def main():
     
     # Mostrar información sobre los datos cargados
     st.success(f"✅ **Datos cargados exitosamente**: {len(df):,} registros procesados")
-
+    
+    # Resumen del dataset
+    summary = data_manager.get_data_summary(df)
+    
+    # Métricas principales en la parte superior
+    col1, col2, col3, col4, col5 = st.columns(5)
+    
+    with col1:
+        st.metric("🚗 Total Accidentes", f"{summary['total_accidents']:,}")
+    
+    with col2:
+        st.metric("🗺️ Estados", summary['states_count'])
+    
+    with col3:
+        st.metric("🏙️ Ciudades", summary['cities_count'])
+    
+    with col4:
+        st.metric("📅 Período", summary['date_range'])
+    
+    with col5:
+        total_size = len(df) / 1000000
+        st.metric("💾 Tamaño Dataset", f"{total_size:.1f}M")
+    
+    st.markdown("---")
+    
+    # Tabs para diferentes visualizaciones
+    tab1, tab2, tab3 = st.tabs(["📊 Tabla Interactiva", "📈 Gráficos Estadísticos", "🗺️ Mapa Interactivo"])
+    
+    # ==================== TAB 1: TABLA INTERACTIVA ====================
+    with tab1:
+        df_filtrado = show_tabla_interactiva(df)
+    
 if __name__ == "__main__":
     main()
