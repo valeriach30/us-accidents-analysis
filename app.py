@@ -16,18 +16,6 @@ def main():
         **Estudiantes:** Darío Zamora Rojas, Valeria Chinchilla Mejías  
         **Fuente de datos:** [Kaggle - US Accidents Dataset](https://www.kaggle.com/datasets/sobhanmoosavi/us-accidents) - [Archivo pre-filtrado en Google Drive](https://drive.google.com/file/d/1_T0CVP34NUlWyyYBjgdzTr32dLv6fpQu/view?usp=sharing)
         **Período:** 2020-2023 (muestra optimizada)  
-        
-        ---
-        
-        ### 🏗️ Arquitectura Modular
-        
-        Esta aplicación estará organizada en módulos independientes:
-        - 📍 **Geoespacial**: Análisis de distribución geográfica
-        - 🌤️ **Climático**: Relación entre clima y accidentes
-        - ⏰ **Temporal**: Patrones de tiempo y horarios
-        - 🛣️ **Infraestructura**: Análisis de elementos viales
-        - 📊 **Dashboard**: Métricas generales y KPIs
-        - 🗺️ **Mapas Avanzados**: Visualizaciones interactivas 3D
         """)
     
     # Inicializar datos 

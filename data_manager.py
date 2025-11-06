@@ -34,10 +34,7 @@ class DataManager:
                 # Descargar solo si no existe
                 if not os.path.exists(output_path):
                     gdown.download(_self.GDRIVE_URL, output_path, quiet=False)
-                    st.success(f"ℹ️ Dataset descargado: {output_path}")
-                else:
-                    st.info(f"ℹ️ Dataset ya existe: {output_path}")
-                
+
                 return output_path
             except Exception as e:
                 st.error(f"❌ Error descargando dataset: {str(e)}")
@@ -56,7 +53,6 @@ class DataManager:
             try:
                 # Leer con Polars
                 df_pl = pl.read_csv(csv_file)
-                st.info(f"Dataset completo: {df_pl.shape[0]:,} registros")
                 
                 # Disminuir tamaño si se especifica sample_size
                 if sample_size is not None and sample_size < len(df_pl):
