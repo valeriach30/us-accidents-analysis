@@ -32,22 +32,23 @@ def main():
     
     performance_mode = st.sidebar.selectbox(
         "Modo de Rendimiento",
-        ["🚀 Rápido (100k registros)", "⚖️ Balanceado (250k registros)", "🐌 Lento (500k registros)"],
+        ["🚀 Rápido (50k registros)", "⚖️ Balanceado (150k registros)", "🐌 Lento (250k registros)"],
         help="Controla la cantidad de datos que se van a procesar para optimizar rendimiento"
     )
     
     # Configurar límites según el modo
     if "Rápido" in performance_mode:
-        sample_size = 100000
-        warning_msg = "🚀 Modo rápido: Procesando 100k registros"
+        sample_size = 50000
+        warning_msg = "🚀 Modo rápido: Procesando 50k registros"
     elif "Balanceado" in performance_mode:
-        sample_size = 250000
-        warning_msg = "⚖️ Modo balanceado: Procesando 250k registros"
+        sample_size = 150000
+        warning_msg = "⚖️ Modo balanceado: Procesando 150k registros"
     else:
-        sample_size = 500000
-        warning_msg = "🐌 Modo lento: Procesando 500k registros"
+        sample_size = 250000
+        warning_msg = "🐌 Modo lento: Procesando 250k registros"
 
     st.sidebar.warning(warning_msg)
+    st.sidebar.info("ℹ️ Recomendamos usar el modo rápido o balanceado para una mejor experiencia. El modo lento puede tardar varios minutos en cargar.")
     
     # Botón para cargar datos
     if st.sidebar.button("📊 Cargar Dataset", type="primary"):
