@@ -139,5 +139,17 @@ def main():
     with tab1:
         df_filtrado = show_tabla_interactiva(df)
     
+    # ==================== TAB 2: GRÁFICOS ESTADÍSTICOS ====================
+    with tab2:
+        # Usar el DataFrame filtrado del tab1 si existe, sino usar el original
+        df_para_graficos = df_filtrado if 'df_filtrado' in locals() else df
+        show_graficos_estadisticos(df_para_graficos)
+    
+    # ==================== TAB 3: MAPA INTERACTIVO ====================
+    with tab3:
+        # Usar el DataFrame filtrado del tab1 si existe, sino usar el original
+        df_para_mapa = df_filtrado if 'df_filtrado' in locals() else df
+        show_mapa_interactivo(df_para_mapa)
+
 if __name__ == "__main__":
     main()

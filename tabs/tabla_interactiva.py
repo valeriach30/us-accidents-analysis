@@ -1,18 +1,13 @@
-"""
-Tab de Tabla Interactiva con filtros
-"""
+# Tab de Tabla Interactiva con filtros
+
 
 import streamlit as st
 import pandas as pd
 
 
+# Mostrar tabla interactiva con filtros
+# df : DataFrame con los datos de accidentes
 def show_tabla_interactiva(df: pd.DataFrame):
-    """
-    Muestra una tabla interactiva con filtros dinámicos
-    
-    Args:
-        df: DataFrame con los datos de accidentes
-    """
     st.markdown("### 📊 Exploración de Datos")
     
     # Filtros en columnas
