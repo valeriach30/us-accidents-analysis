@@ -1,5 +1,7 @@
 # 🚗 Análisis Geoespacial de Accidentes de Tránsito en Estados Unidos
 
+[Link de aplicación](https://us-accidents-analysis-dv.streamlit.app/)
+
 ## 👥 Estudiantes
 
 - Darío Zamora Rojas
