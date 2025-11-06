@@ -3,12 +3,27 @@
 import streamlit as st
 import pandas as pd
 import pydeck as pdk
+import plotly.express as px
 
-# Mostrar mapas interactivos con PyDeck
+# Mostrar mapas interactivos con PyDeck y Plotly
 # df: DataFrame con los datos de accidentes
 def show_mapa_interactivo(df: pd.DataFrame):
     st.markdown("### 🗺️ Visualización Geoespacial")
     
+    # Crear subtabs para los diferentes mapas
+    tab_dispersion, tab_choropleth = st.tabs(["📍 Mapa de Dispersión", "🗺️ Mapa de Estados"])
+    
+    # Tab 1: Mapa de Dispersión
+    with tab_dispersion:  
+        show_mapa_dispersion(df)
+
+    # Tab 2: Mapa Choropleth de Estados
+    with tab_choropleth:
+        show_mapa_choropleth(df)
+        
+
+# Mostrar mapa de dispersión
+def show_mapa_dispersion(df: pd.DataFrame):
     # Controles del mapa
     col1, col2 = st.columns(2)
     
@@ -33,9 +48,6 @@ def show_mapa_interactivo(df: pd.DataFrame):
         df_mapa['Visibility(mi)'].fillna(df_mapa['Visibility(mi)'].median(), inplace=True)
     
     st.info(f"🗺️ Mostrando {len(df_mapa):,} puntos en el mapa")
-    
-   
-    # ==================== MAPA DE DISPERSIÓN ====================
     
     # Configurar colores según la opción seleccionada
     if color_by == "Severidad":
@@ -129,7 +141,7 @@ def show_mapa_interactivo(df: pd.DataFrame):
     )
     
     st.pydeck_chart(r, use_container_width=True)
-    
+
     # Leyendas
     st.markdown("---")
 
@@ -155,3 +167,101 @@ def show_mapa_interactivo(df: pd.DataFrame):
         - 🟡 Amarillo = Media
         - 🟢 Verde = Alta Visibilidad
         """)
+    
+# Mostrar mapa choropleth de estados
+def show_mapa_choropleth(df: pd.DataFrame):
+    st.markdown("### 🗺️ Mapa de Estados por Métricas de Accidentes")
+    
+    # Selector de métrica para el mapa de estados
+    state_metric = st.selectbox("📊 Métrica del mapa de estados", 
+                                ["Cantidad de Accidentes", "Severidad Promedio", "Temperatura Promedio"])
+    
+    if not df.empty:
+        # Crear datos agregados por estado
+        agg_dict = {
+            'ID': 'count',
+            'Severity': 'mean',
+            'Start_Lat': 'mean',
+            'Start_Lng': 'mean'
+        }
+        
+        # Agregar temperatura si existe
+        if 'Temperature(F)' in df.columns:
+            agg_dict['Temperature(F)'] = 'mean'
+        
+        state_data = df.groupby('State').agg(agg_dict).round(2)
+        
+        # Renombrar columnas según lo que tengamos
+        if 'Temperature(F)' in df.columns:
+            state_data.columns = ['Accidentes', 'Severidad_Promedio', 'Lat_Centro', 'Lng_Centro', 'Temperatura_Promedio']
+        else:
+            state_data.columns = ['Accidentes', 'Severidad_Promedio', 'Lat_Centro', 'Lng_Centro']
+        
+        state_data = state_data.reset_index()
+        
+        # Configurar el mapa según la métrica seleccionada
+        if state_metric == "Cantidad de Accidentes":
+            color_column = 'Accidentes'
+            color_scale = 'Reds'
+            title = "Estados de EE.UU. Coloreados por Cantidad de Accidentes"
+            hover_data = {
+                'Accidentes': ':,',
+                'Severidad_Promedio': ':.2f',
+                'State': False
+            }
+            if 'Temperatura_Promedio' in state_data.columns:
+                hover_data['Temperatura_Promedio'] = ':.1f'
+                
+        elif state_metric == "Severidad Promedio":
+            color_column = 'Severidad_Promedio'
+            color_scale = 'YlOrRd'
+            title = "Estados de EE.UU. Coloreados por Severidad Promedio"
+            hover_data = {
+                'Accidentes': ':,',
+                'Severidad_Promedio': ':.2f',
+                'State': False
+            }
+            if 'Temperatura_Promedio' in state_data.columns:
+                hover_data['Temperatura_Promedio'] = ':.1f'
+                
+        else:  # Temperatura Promedio
+            if 'Temperatura_Promedio' in state_data.columns:
+                color_column = 'Temperatura_Promedio'
+                color_scale = 'RdYlBu_r'
+                title = "Estados de EE.UU. Coloreados por Temperatura Promedio"
+                hover_data = {
+                    'Accidentes': ':,',
+                    'Severidad_Promedio': ':.2f',
+                    'Temperatura_Promedio': ':.1f',
+                    'State': False
+                }
+            else:
+                # Fallback a cantidad si no hay temperatura
+                color_column = 'Accidentes'
+                color_scale = 'Reds'
+                title = "Estados de EE.UU. Coloreados por Cantidad de Accidentes"
+                hover_data = {
+                    'Accidentes': ':,',
+                    'Severidad_Promedio': ':.2f',
+                    'State': False
+                }
+                st.warning("⚠️ Temperatura no disponible, mostrando cantidad de accidentes")
+        
+        # Crear el mapa choropleth
+        fig_choropleth = px.choropleth(
+            state_data,
+            locations='State',
+            color=color_column,
+            locationmode='USA-states',
+            hover_name='State',
+            hover_data=hover_data,
+            title=title,
+            color_continuous_scale=color_scale,
+            scope="usa"
+        )
+        fig_choropleth.update_layout(
+            height=500, 
+            geo=dict(bgcolor='rgba(0,0,0,0)'),
+            title_font_size=16
+        )
+        st.plotly_chart(fig_choropleth, use_container_width=True, key='geo_choropleth')
